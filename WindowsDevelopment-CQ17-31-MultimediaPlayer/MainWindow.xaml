@@ -5,8 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsDevelopment_CQ17_31_MultimediaPlayer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Background="Black"
+        Height="550" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Canvas Name="LeftCavas" Grid.Row="0" Grid.Column="0">
+
+            <Canvas.Background>
+                <ImageBrush ImageSource="Images/background.jpg" Stretch="UniformToFill"/>
+            </Canvas.Background>
+
+            <TextBlock Style="{StaticResource WhiteLargeTextBlockStyle}"
+                Name="TrackNameTextBlock" Text="Music Name here" Canvas.Left="102" Canvas.Top="56"></TextBlock>
+
+            <Image Source="Images/disc.png" Height="195" Width="195" Canvas.Left="100" Canvas.Top="90"></Image>
+            <TextBlock Style="{StaticResource WhiteMediumTextBlockStyle}"
+                Name="TimeTextBlock" Text="00:20 | 03:50" Canvas.Left="140" Canvas.Top="298"></TextBlock>
+
+            <Button Name="PlayButton" Background="Transparent" 
+                Height="46" Width="45" Canvas.Top="340" Canvas.Left="170">
+                <Image Source="Images/play.png" RenderOptions.BitmapScalingMode="Fant" />
+            </Button>
+
+            <Button Name="ForwardButton" Background="Transparent"
+                    Height="35" Width="35" Canvas.Left="235" Canvas.Top="348">
+                <Image Source="Images/forwards.png" RenderOptions.BitmapScalingMode="Fant"/>
+            </Button>
+
+            <Button Name="BackwardButton" Background="Transparent"
+                    Height="35" Width="35" Canvas.Left="115" Canvas.Top="348">
+                <Image Source="Images/backward.png" RenderOptions.BitmapScalingMode="Fant"/>
+            </Button>
+
+            <Button Name="SaveButton" Background="Transparent"
+                    Height="35" Width="35" Canvas.Left="300" Canvas.Top="348">
+                <Image Source="Images/next.png" RenderOptions.BitmapScalingMode="Fant"/>
+            </Button>
+
+            <Button Name="BackButton" Background="Transparent"
+                    Height="35" Width="35" Canvas.Left="55" Canvas.Top="348">
+                <Image Source="Images/back.png" RenderOptions.BitmapScalingMode="Fant"/>
+            </Button>
+
+        </Canvas>
+
+        <Canvas Name="RightCanvas" Grid.Row="0" Grid.Column="1">
+
+            <Border CornerRadius="0,0,30,0" BorderThickness="3" BorderBrush="#DD2121" Canvas.Top="77.5" Height="40" Width="308">
+                <Canvas Canvas.Left="38" Canvas.Top="100">
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="10"  Canvas.Top="5">
+                        <Image Source="Images/add.png"></Image>
+                    </Button>
+
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="50" Canvas.Top="5">
+                        <Image Source="Images/remove.png"></Image>
+                    </Button>
+
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="100" Canvas.Top="5">
+                        <Image Source="Images/up.png"></Image>
+                    </Button>
+
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="135" Canvas.Top="5">
+                        <Image Source="Images/down.png"></Image>
+                    </Button>
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="190" Canvas.Top="5">
+                        <Image Source="Images/shuffle.png"/>
+                    </Button>
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="230" Canvas.Top="5">
+                        <Image Source="Images/loop.png"/>
+                    </Button>
+
+                </Canvas>
+
+            </Border>
+
+            <Border CornerRadius="0,0,23,0" BorderThickness="3" BorderBrush="#DD2121" Canvas.Top="30" Height="50" Width="373">
+                <Canvas Canvas.Left="38" Canvas.Top="100">
+                    <TextBlock Style="{StaticResource WhiteMediumTextBlockStyle}"  Text="Playlist: " Canvas.Left="10" Canvas.Top="7"/>
+                    <TextBlock x:Name="PlayListNameTextBlock" Style="{StaticResource WhiteMediumTextBlockStyle}"  Text="Insert Name here" Canvas.Left="88" Canvas.Top="7"/>
+                    <Button Height="25" Width="30" Background="Transparent" Canvas.Left="265"  Canvas.Top="8">
+                        <Image Source="Images/save.png"/>
+                    </Button>
+                    <Button Height="25" Width="25" Background="Transparent" Canvas.Left="314" Canvas.Top="8">
+                        <Image Source="Images/load.png"/>
+                    </Button>
+
+                </Canvas>
+
+            </Border>
+
+            <Border CornerRadius="0,0,60,0" BorderThickness="3" BorderBrush="#DD2121" Padding="10, 3, 20 ,35"
+                Canvas.Top="120" Height="378">
+                <ListView Name="PlayListListView" ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                          Background="Black" BorderThickness="0" Padding="10,2" Width="340" Height="303" Margin="0,11.2">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderStyle}" AllowsColumnReorder="False">
+                            <GridViewColumn Header="Track" Width="240" DisplayMemberBinding= "{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                            <GridViewColumn Header="Length" Width="70" DisplayMemberBinding= "{Binding Length, UpdateSourceTrigger=PropertyChanged}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+            </Border>
+
+
+        </Canvas>
     </Grid>
 </Window>

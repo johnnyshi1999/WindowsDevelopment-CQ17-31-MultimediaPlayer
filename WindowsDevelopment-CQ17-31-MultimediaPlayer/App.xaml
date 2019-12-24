@@ -4,6 +4,56 @@
              xmlns:local="clr-namespace:WindowsDevelopment_CQ17_31_MultimediaPlayer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type TextBlock}" x:Key="WhiteLargeTextBlockStyle">
+            <Setter Property="Foreground" Value="GhostWhite"/>
+            <Setter Property="FontSize" Value="25"/>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}" x:Key="WhiteMediumTextBlockStyle">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}" x:Key="WhiteSmallTextBlockStyle">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="Foreground" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="DarkGray" />
+                    <Setter Property="BorderBrush" Value="GhostWhite" />
+                </Trigger>
+                <Trigger Property="IsSelected" Value="true">
+                    <Setter Property="Background" Value="DarkGray" />
+                    <Setter Property="BorderBrush" Value="GhostWhite" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ListViewHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                        <Grid>
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Black" Background="Transparent">
+                                <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Width="{TemplateBinding Width}" TextAlignment="Center" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="AllowDrop" Value="False"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
     </Application.Resources>
 </Application>

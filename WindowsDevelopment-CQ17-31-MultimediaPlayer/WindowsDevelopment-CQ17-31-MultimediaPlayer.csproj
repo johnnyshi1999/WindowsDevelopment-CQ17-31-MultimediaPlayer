@@ -95,9 +95,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\disc.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\play.png" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +129,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\loop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\new-playlist.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\disc.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

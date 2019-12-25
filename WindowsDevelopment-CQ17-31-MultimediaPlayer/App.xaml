@@ -4,6 +4,22 @@
              xmlns:local="clr-namespace:WindowsDevelopment_CQ17_31_MultimediaPlayer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <Style TargetType="{x:Type Border}" x:Key="BorderStyle">
+            <Setter Property="BorderBrush" Value="#DD2121"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+        
+        <Style TargetType="{x:Type Button}" x:Key="ButtonStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
         <Style TargetType="{x:Type TextBlock}" x:Key="WhiteLargeTextBlockStyle">
             <Setter Property="Foreground" Value="GhostWhite"/>
             <Setter Property="FontSize" Value="25"/>
@@ -25,12 +41,13 @@
             <Setter Property="Foreground" Value="White" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Background" Value="DarkGray" />
-                    <Setter Property="BorderBrush" Value="GhostWhite" />
+                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="BorderBrush" Value="Red" />
+                    <Setter Property="Foreground" Value="White" />
                 </Trigger>
                 <Trigger Property="IsSelected" Value="true">
-                    <Setter Property="Background" Value="DarkGray" />
-                    <Setter Property="BorderBrush" Value="GhostWhite" />
+                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="BorderBrush" Value="Red" />
                     <Setter Property="Foreground" Value="White" />
                 </Trigger>
             </Style.Triggers>

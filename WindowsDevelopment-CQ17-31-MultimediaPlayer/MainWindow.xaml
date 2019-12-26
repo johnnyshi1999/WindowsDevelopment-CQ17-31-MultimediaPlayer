@@ -20,8 +20,12 @@
                 <ImageBrush ImageSource="Images/background.jpg" Stretch="UniformToFill"/>
             </Canvas.Background>
 
-            <TextBlock Style="{StaticResource WhiteLargeTextBlockStyle}"
-                Name="TrackNameTextBlock" Text="Music Name here" Canvas.Left="102" Canvas.Top="56"></TextBlock>
+            <Canvas ClipToBounds="True" Name="canMain" Canvas.Left="102" Canvas.Top="56"
+                     Width="200" Height="50">
+                <TextBlock Style="{StaticResource WhiteLargeTextBlockStyle}"
+                    Name="TrackNameTextBlock" Text="Music Name here" 
+                           TextWrapping="Wrap"></TextBlock>
+            </Canvas>
 
             <Image Source="Images/disc.png" Height="195" Width="195" Canvas.Left="101" Canvas.Top="120"></Image>
             <TextBlock Style="{StaticResource WhiteMediumTextBlockStyle}"
@@ -74,12 +78,12 @@
                     Canvas.Top="105" Height="40" Width="308">
                 <Canvas Canvas.Left="38" Canvas.Top="100">
                     <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="10"  Canvas.Top="5">
+                            Canvas.Left="10"  Canvas.Top="5" Click="AddTrackButton_Click">
                         <Image Source="Images/add.png"></Image>
                     </Button>
 
                     <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="50" Canvas.Top="5">
+                            Canvas.Left="50" Canvas.Top="5" Click="RemoveTrackButton_Click">
                         <Image Source="Images/remove.png"></Image>
                     </Button>
 
@@ -116,7 +120,8 @@
             <Border CornerRadius="0,0,60,0" Style="{StaticResource BorderStyle}" Padding="10, 3, 20 ,35"
                 Canvas.Top="142" Height="353">
                 <ListView Name="PlayListListView" ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                          Background="Transparent" BorderThickness="0" Padding="10,2" Width="340" Margin="0,11.6,0,-5">
+                          Background="Transparent" BorderThickness="0" Padding="10,2" Width="340" Margin="0,11.6,0,-5"
+                          MouseDoubleClick="PlaylistTrack_DoubleClick">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderStyle}" AllowsColumnReorder="False">
                             <GridViewColumn Header="Track" Width="240" DisplayMemberBinding= "{Binding Name, UpdateSourceTrigger=PropertyChanged}" />

@@ -10,6 +10,14 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     class Track
     {
         private FileInfo trackFile;
+        public string FilePath
+        {
+            get
+            {
+                string path = trackFile.FullName;
+                return path;
+            }
+        }
         public TimeSpan position { set; get; }
         public TimeSpan naturalDuration { set; get; }
 

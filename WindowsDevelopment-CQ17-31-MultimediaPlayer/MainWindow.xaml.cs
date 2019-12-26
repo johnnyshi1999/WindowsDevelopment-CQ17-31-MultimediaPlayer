@@ -20,26 +20,21 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     
-     class Album
-    {
-        public string Name { get; set; }
-        public string Length { get; set; }
-    }
     public partial class MainWindow : Window
     {
-        BindingList<Album> list;
+        Playlist currentPlaylist;
+        BindingList<Track> trackList;
         public MainWindow()
         {
             InitializeComponent();
-            Album album = new Album()
-            {
-                Name = "hello",
-                Length="3:45"
-            };
-            list = new BindingList<Album>();
-            list.Add(album);
-            PlayListListView.ItemsSource = list;
+        }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            currentPlaylist = new Playlist("My playlist");
+            trackList = new BindingList<Track>(currentPlaylist.trackList);
+            PlayListListView.ItemsSource = trackList;
+            PlayListNameTextBlock.Text = currentPlaylist.playlistName;
         }
     }
 }

@@ -13,7 +13,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     {
         private static MusicBox instance = null;
         private MediaPlayer myMusicPlayer;
-        private bool isPaused = false;
 
         private MusicBox()
         {
@@ -49,7 +48,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         public void pauseTrack()
         {
-            isPaused = true;
             myMusicPlayer.Pause();
         }
 

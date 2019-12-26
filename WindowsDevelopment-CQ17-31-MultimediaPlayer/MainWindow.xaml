@@ -89,13 +89,13 @@
                         <Image Source="Images/remove.png"></Image>
                     </Button>
 
-                    <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="100" Canvas.Top="5">
+                    <Button Name="TrackUp" Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="100" Canvas.Top="5" Click="TrackUp_Click">
                         <Image Source="Images/up.png"></Image>
                     </Button>
 
-                    <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="135" Canvas.Top="5">
+                    <Button Name="TrackDown" Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="135" Canvas.Top="5" Click="TrackDown_Click">
                         <Image Source="Images/down.png"></Image>
                     </Button>
                     <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
@@ -137,8 +137,8 @@
             <Border CornerRadius="0,0,0,30" Style="{StaticResource BorderStyle}"  
                     Canvas.Top="10" Height="40" Width="308" Canvas.Left="89">
                 <Canvas Canvas.Left="38" Canvas.Top="100">
-                    <Button Height="25" Width="115" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="36"  Canvas.Top="5">
+                    <Button Name="NewPlaylistButton" Height="25" Width="115" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="36"  Canvas.Top="5" Click="NewPlaylistButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/new-playlist.png"/>
                             <TextBlock Padding="5,0,0,0" Foreground="White" FontSize="15"  

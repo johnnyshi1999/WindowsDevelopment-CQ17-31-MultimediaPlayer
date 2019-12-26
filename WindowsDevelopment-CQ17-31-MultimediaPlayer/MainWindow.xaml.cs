@@ -74,9 +74,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            currentPlaylist = new Playlist("My playlist");
-            PlayListListView.ItemsSource = currentPlaylist.trackList;
-            PlayListNameTextBlock.Text = currentPlaylist.playlistName;
 
             //Stuffz threadz
             AddTracks = new BackgroundWorker() {
@@ -95,6 +92,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPlaylist == null) return;
             var fileDialog = new OpenFileDialog()
             {
                 Multiselect = true,
@@ -110,6 +108,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void RemoveTrackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPlaylist == null) return;
             var selected = PlayListListView.SelectedItems.Cast<Track>().ToList();
             int amount = selected.Count;
             Mouse.OverrideCursor = Cursors.Wait;
@@ -120,15 +119,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void PlaylistTrack_DoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (currentPlaylist == null) return;
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Track;
             if (item != null)
             {
                 MarqueeTrackName(item.Name);
+                currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
+                MusicBox.getInstance().playTrack(item.FilePath);
             }
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPlaylist == null) return;
             if (PlayListListView.SelectedItems.Count != 1)
             {
                 MessageBox.Show("Please choose one and only one song");
@@ -142,12 +145,39 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPlaylist == null) return;
             MusicBox.getInstance().stopTrack();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPlaylist == null) return;
             MusicBox.getInstance().pauseTrack();
+        }
+
+        private void TrackUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null) return;
+        }
+
+        private void TrackDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null) return;
+        }
+
+        //New playlist dialog
+        private void NewPlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            var newPlaylist = new NewPlaylistDialog();
+            newPlaylist.NewPlaylistEvent += NewPlaylist_NewPlaylistEvent;
+            newPlaylist.Show();
+        }
+
+        private void NewPlaylist_NewPlaylistEvent(Playlist playlist)
+        {
+            currentPlaylist = playlist;
+            PlayListListView.ItemsSource = currentPlaylist.trackList;
+            PlayListNameTextBlock.Text = currentPlaylist.playlistName;
         }
 
         //-----------------------Animations-----------------------

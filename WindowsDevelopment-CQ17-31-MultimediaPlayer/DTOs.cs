@@ -50,20 +50,20 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     }
 
     //Chế độ chơi playlist
-    enum PLAY_MODE
+    public enum PLAY_MODE
     {
         SEQUENTIAL,
         RANDOM
     }
 
     //Chế độ lặp playlist
-    enum LOOP_MODE
+    public enum LOOP_MODE
     {
         ONE_TIME,
         INFINITE
     }
 
-    class Playlist
+    public class Playlist
     {
         public string playlistName { get; set; }
         public BindingList<Track> trackList;

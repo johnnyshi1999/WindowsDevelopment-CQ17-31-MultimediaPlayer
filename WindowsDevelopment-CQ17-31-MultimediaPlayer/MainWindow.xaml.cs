@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -26,12 +27,47 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         //Playlist
         Playlist currentPlaylist;
 
-        //Media player
-        MusicBox myMusicBox;
+        //Threads
+        BackgroundWorker AddTracks;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        //-------------------------Threads-------------------------
+
+        private void AddTracks_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string[] trackPaths = (string[])e.Argument;
+           
+            int playlistCount = currentPlaylist.trackList.Count;
+            for (int i = 0; i < trackPaths.Length; i++)
+            {
+                bool trackDuplicate = false;
+                
+                for (int j = 0; j < playlistCount; j++)
+                {
+                    if (trackPaths[i].Equals(currentPlaylist.trackList[j].FilePath))
+                    {
+                        trackDuplicate = true;
+                        break;
+                    }
+                }
+                if (!trackDuplicate) AddTracks.ReportProgress(0, new Track(trackPaths[i]));
+
+            }
+        }
+
+        private void AddTracks_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Track track = (Track)e.UserState;
+            currentPlaylist.trackList.Add(track);
+        }
+
+        private void AddTracks_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         //--------------------------Events--------------------------
@@ -41,6 +77,20 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             currentPlaylist = new Playlist("My playlist");
             PlayListListView.ItemsSource = currentPlaylist.trackList;
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
+
+            //Stuffz threadz
+            AddTracks = new BackgroundWorker() {
+               WorkerReportsProgress = true,
+            };
+            AddTracks.DoWork += AddTracks_DoWork;
+            AddTracks.ProgressChanged += AddTracks_ProgressChanged;
+            AddTracks.RunWorkerCompleted += AddTracks_RunWorkerCompleted;
+
+            //Set stuffz
+            TrackNameTextBlock.Measure(new Size(double.PositiveInfinity,
+                                            double.PositiveInfinity));
+            var Width = TrackNameTextBlock.DesiredSize.Width;
+            Canvas.SetRight(TrackNameTextBlock, (TrackNameWrapper.ActualWidth - Width) / 2);
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -54,24 +104,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (fileDialog.ShowDialog() == true)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                string[] trackPaths = fileDialog.FileNames;
-                int playlistCount = currentPlaylist.trackList.Count;
-                for (int i = 0; i < trackPaths.Length; i++)
-                {
-                    bool trackDuplicate = false;
-
-                    for (int j = 0; j < playlistCount; j++)
-                    {
-                        if (trackPaths[i].Equals(currentPlaylist.trackList[j].FilePath))
-                        {
-                            trackDuplicate = true;
-                            break;
-                        }
-                    }
-
-                    if(!trackDuplicate) currentPlaylist.trackList.Add(new Track(trackPaths[i]));
-                }
-                Mouse.OverrideCursor = Cursors.Arrow;
+                AddTracks.RunWorkerAsync(fileDialog.FileNames);
             }
         }
 
@@ -90,9 +123,59 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Track;
             if (item != null)
             {
-                TrackNameTextBlock.Text = item.Name;
-                MessageBox.Show("Item's Double Click handled!");
+                MarqueeTrackName(item.Name);
             }
+        }
+
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PlayListListView.SelectedItems.Count != 1)
+            {
+                MessageBox.Show("Please choose one and only one song");
+                return;
+            }
+            var item = PlayListListView.SelectedItem as Track;
+            MarqueeTrackName(item.Name);
+            currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
+            MusicBox.getInstance().playTrack(item.FilePath);
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            MusicBox.getInstance().stopTrack();
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            MusicBox.getInstance().pauseTrack();
+        }
+
+        //-----------------------Animations-----------------------
+        private void MarqueeTrackName(string trackName)
+        {
+            TrackNameTextBlock.Text = trackName;
+            TrackNameTextBlock.Measure(new Size(double.PositiveInfinity,
+                                            double.PositiveInfinity));
+            var Width = TrackNameTextBlock.DesiredSize.Width;
+            double height = TrackNameWrapper.ActualHeight - TrackNameTextBlock.ActualHeight;
+            TrackNameTextBlock.Margin = new Thickness(0, height / 2, 0, 0);
+            
+            Storyboard marquee = new Storyboard();
+            //Marquee
+            DoubleAnimation marqueeAnimation = new DoubleAnimation
+            {
+                From = -Width,
+                To = TrackNameWrapper.ActualWidth,
+                RepeatBehavior = RepeatBehavior.Forever,
+                Duration = new Duration(TimeSpan.FromSeconds(10)),
+            };
+            Storyboard.SetTarget(marqueeAnimation, TrackNameTextBlock);
+            Storyboard.SetTargetProperty(marqueeAnimation, new PropertyPath("(Canvas.Right)"));
+            marquee.Children.Add(marqueeAnimation);
+
+            //Apply
+            marquee.Begin(this);
+
         }
 
     }

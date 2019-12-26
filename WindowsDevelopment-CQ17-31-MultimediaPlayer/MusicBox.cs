@@ -13,6 +13,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     {
         private static MusicBox instance = null;
         private MediaPlayer myMusicPlayer;
+        private bool isPaused = false;
 
         private MusicBox()
         {
@@ -22,7 +23,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)
         {
-            
+            myMusicPlayer.Play();
         }
 
         public static MusicBox getInstance()
@@ -30,6 +31,31 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (instance == null)
                 instance = new MusicBox();
             return instance;
+        }
+
+        public void playTrack(string trackPath)
+        {
+
+            if (myMusicPlayer.Source != null)
+            {
+                if(trackPath.Equals(myMusicPlayer.Source.LocalPath))
+                    myMusicPlayer.Play();
+                else
+                    myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
+            }
+            else
+                myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
+        }
+
+        public void pauseTrack()
+        {
+            isPaused = true;
+            myMusicPlayer.Pause();
+        }
+
+        public void stopTrack()
+        {
+            myMusicPlayer.Stop();
         }
     }
 }

@@ -20,11 +20,10 @@
                 <ImageBrush ImageSource="Images/background.jpg" Stretch="UniformToFill"/>
             </Canvas.Background>
 
-            <Canvas ClipToBounds="True" Name="canMain" Canvas.Left="102" Canvas.Top="56"
-                     Width="200" Height="50">
+            <Canvas ClipToBounds="True" Name="TrackNameWrapper" Canvas.Left="52" Canvas.Top="56"
+                     Width="250" Height="50">
                 <TextBlock Style="{StaticResource WhiteLargeTextBlockStyle}"
-                    Name="TrackNameTextBlock" Text="Music Name here" 
-                           TextWrapping="Wrap"></TextBlock>
+                    Name="TrackNameTextBlock" Text="Choose your song"></TextBlock>
             </Canvas>
 
             <Image Source="Images/disc.png" Height="195" Width="195" Canvas.Left="101" Canvas.Top="120"></Image>
@@ -35,7 +34,8 @@
                     Canvas.Left="15" Canvas.Top="390">
                 <Canvas Margin="19.8,-0.2,19.8,5">
                     <Button Style="{StaticResource ButtonStyle}" x:Name="PlayButton"
-                Height="46" Width="46" Canvas.Top="2" Canvas.Left="136">
+                    Height="46" Width="46" Canvas.Top="2" Canvas.Left="136"
+                        Click="PlayButton_Click">
                         <Image Source="Images/play.png" RenderOptions.BitmapScalingMode="Fant" />
                     </Button>
 
@@ -58,12 +58,14 @@
                     Height="35" Width="35" Canvas.Left="-5" Canvas.Top="13">
                         <Image Source="Images/back.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
-                    <Button Style="{StaticResource ButtonStyle}" x:Name="PlayButton_Copy"
-                Height="40" Width="40" Canvas.Top="7" Canvas.Left="89">
+                    <Button Style="{StaticResource ButtonStyle}" x:Name="StopButton"
+                    Height="40" Width="40" Canvas.Top="7" Canvas.Left="89"
+                            Click="StopButton_Click">
                         <Image Source="Images/play.png" RenderOptions.BitmapScalingMode="Fant" />
                     </Button>
-                    <Button Style="{StaticResource ButtonStyle}" x:Name="PlayButton_Copy1"
-                Height="40" Width="40" Canvas.Top="7" Canvas.Left="185">
+                    <Button Style="{StaticResource ButtonStyle}" x:Name="PauseButton"
+                    Height="40" Width="40" Canvas.Top="7" Canvas.Left="185"
+                            Click="PauseButton_Click">
                         <Image Source="Images/play.png" RenderOptions.BitmapScalingMode="Fant" />
                     </Button>
 

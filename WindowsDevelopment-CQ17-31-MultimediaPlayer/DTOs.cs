@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 {
-    class Track
+    public class Track
     {
         private FileInfo trackFile;
         private TagLib.File fileForTrackingProperties;
@@ -69,7 +69,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         public BindingList<Track> trackList;
         public PLAY_MODE playMode { get; set; }
         public LOOP_MODE loopMode { get; set; }
-        private int currentTrackIdx = -1;
+        public int currentTrackIdx = -1;
 
         public Playlist(string name)
         {

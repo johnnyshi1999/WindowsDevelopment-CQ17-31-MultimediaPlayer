@@ -12,6 +12,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 {
     class MusicBox
     {
+        public event EventHandler TrackEnded;
         private static MusicBox instance = null;
         private MediaPlayer myMusicPlayer;
 
@@ -19,6 +20,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             myMusicPlayer = new MediaPlayer();
             myMusicPlayer.MediaOpened += MyMusicPlayer_MediaOpened;
+        }
+
+        public void SetTrackEndedEvent(EventHandler TrackEndedEvent)
+        {
+            myMusicPlayer.MediaEnded += TrackEndedEvent;
         }
 
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)

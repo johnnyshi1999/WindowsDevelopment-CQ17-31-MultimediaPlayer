@@ -102,8 +102,9 @@
                             Canvas.Left="190" Canvas.Top="5">
                         <Image Source="Images/shuffle.png"/>
                     </Button>
-                    <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="230" Canvas.Top="5">
+                    <Button Name="LoopButton" Tag="Off" Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="230" Canvas.Top="5"
+                            Click="LoopButton_Click">
                         <Image Source="Images/loop.png"/>
                     </Button>
 

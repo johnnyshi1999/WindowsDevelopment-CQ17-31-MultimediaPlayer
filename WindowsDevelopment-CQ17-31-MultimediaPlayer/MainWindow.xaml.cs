@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -136,6 +137,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (item != null)
             {
                 MarqueeTrackName(item.Name);
+                if (item.FilePath == null)
+                {
+                    MusicBox.getInstance().stopTrack();
+                    TimeTextBlock.Text = "00:00 | 00:00";
+                    return;
+                }
                 currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
                 MusicBox.getInstance().playTrack(item.FilePath, _timer);
             }
@@ -151,6 +158,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
+            if (item.FilePath == null)
+            {
+                MusicBox.getInstance().stopTrack();
+                TimeTextBlock.Text = "00:00 | 00:00";
+                return;
+            }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
             MusicBox.getInstance().playTrack(item.FilePath, _timer);
         }
@@ -222,9 +235,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void timer_Tick(object sender, EventArgs e)
         {
-                var currentPos = MusicBox.getInstance().getCurrentPosition();
-                var duration = MusicBox.getInstance().getDuration();
-                TimeTextBlock.Text = $"{currentPos} | {duration}";    
+            if (!MusicBox.getInstance().isPlaying) return;
+            var currentPos = MusicBox.getInstance().getCurrentPosition();
+            var duration = MusicBox.getInstance().getDuration();
+            TimeTextBlock.Text = $"{currentPos} | {duration}";    
         }
 
         private void SavePlayListButton_Click(object sender, RoutedEventArgs e)

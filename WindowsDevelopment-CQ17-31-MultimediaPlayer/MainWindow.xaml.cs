@@ -29,6 +29,8 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         //Playlist
         Playlist currentPlaylist;
 
+        Model model;
+
         //Threads
         BackgroundWorker AddTracks;
 
@@ -98,6 +100,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                                             double.PositiveInfinity));
             var Width = TrackNameTextBlock.DesiredSize.Width;
             Canvas.SetRight(TrackNameTextBlock, (TrackNameWrapper.ActualWidth - Width) / 2);
+            model = Model.GetInstance();
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -236,6 +239,23 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             var currentPos = MusicBox.getInstance().getCurrentPosition();
             var duration = MusicBox.getInstance().getDuration();
             TimeTextBlock.Text = $"{currentPos} | {duration}";    
+        }
+
+        private void SavePlayListButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null)
+            {
+                MessageBox.Show("There are no playlist");
+                return;
+            }
+            model.SavePlayList(currentPlaylist);
+        }
+
+        private void LoadPlayListButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPlayListDialog dialog = new LoadPlayListDialog();
+            dialog.NewPlaylistEvent += NewPlaylist_NewPlaylistEvent;
+            dialog.ShowDialog();
         }
     }
 }

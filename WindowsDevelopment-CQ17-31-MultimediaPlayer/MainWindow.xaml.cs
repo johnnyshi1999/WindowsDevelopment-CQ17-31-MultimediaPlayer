@@ -325,7 +325,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return;
             }
 
-            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count)
+            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
             {
                 PlayListListView.SelectedIndex++;
             }

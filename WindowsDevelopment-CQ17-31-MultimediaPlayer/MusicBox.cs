@@ -23,6 +23,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             isPlaying = false;
         }
 
+        public void SetTrackEndedEvent(EventHandler TrackEndedEvent)
+        {
+            myMusicPlayer.MediaEnded += TrackEndedEvent;
+        }
+
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)
         {
             myMusicPlayer.Play();

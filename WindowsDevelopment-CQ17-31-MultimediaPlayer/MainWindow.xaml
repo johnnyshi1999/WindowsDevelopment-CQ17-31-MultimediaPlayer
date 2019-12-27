@@ -49,13 +49,15 @@
                         <Image Source="Images/backward.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
 
-                    <Button x:Name="SaveButton" Style="{StaticResource ButtonStyle}" 
-                    Height="35" Width="35" Canvas.Left="286" Canvas.Top="12">
+                    <Button x:Name="NextButton" Style="{StaticResource ButtonStyle}" 
+                    Height="35" Width="35" Canvas.Left="286" Canvas.Top="12"
+                    Click="NextButton_Click">
                         <Image Source="Images/next.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
 
                     <Button x:Name="BackButton" Style="{StaticResource ButtonStyle}" 
-                    Height="35" Width="35" Canvas.Left="-5" Canvas.Top="13">
+                    Height="35" Width="35" Canvas.Left="-5" Canvas.Top="13"
+                    Click="BackButton_Click">
                         <Image Source="Images/back.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
                     <Button Style="{StaticResource ButtonStyle}" x:Name="StopButton"
@@ -102,8 +104,9 @@
                             Canvas.Left="190" Canvas.Top="5">
                         <Image Source="Images/shuffle.png"/>
                     </Button>
-                    <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="230" Canvas.Top="5">
+                    <Button Name="LoopButton" Tag="Off" Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="230" Canvas.Top="5"
+                            Click="LoopButton_Click">
                         <Image Source="Images/loop.png"/>
                     </Button>
 

@@ -35,6 +35,8 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         BackgroundWorker AddTracks;
 
         DispatcherTimer _timer;
+      
+        MusicBox MusicBox;
 
         public MainWindow()
         {
@@ -101,6 +103,8 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             var Width = TrackNameTextBlock.DesiredSize.Width;
             Canvas.SetRight(TrackNameTextBlock, (TrackNameWrapper.ActualWidth - Width) / 2);
             model = Model.GetInstance();
+            MusicBox = MusicBox.getInstance();
+            MusicBox.SetTrackEndedEvent(LoopMode_trackEndEventHandler);
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -151,10 +155,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
-            if (PlayListListView.SelectedItems.Count != 1)
+
+            //if more than 1 track is selected
+            if (PlayListListView.SelectedItems.Count > 1)
             {
                 MessageBox.Show("Please choose one and only one song");
                 return;
+            }
+
+            //if no track is selected 
+            if (PlayListListView.SelectedItems.Count == 0)
+            {
+                //play the first track
+                PlayListListView.SelectedIndex = 0;
             }
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
@@ -203,6 +216,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             currentPlaylist = playlist;
             PlayListListView.ItemsSource = currentPlaylist.trackList;
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
+            if (LoopButton.Tag.ToString() == "On")
+            {
+                currentPlaylist.loopMode = LOOP_MODE.INFINITE;
+            }
         }
 
         //-----------------------Animations-----------------------
@@ -256,6 +273,87 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             LoadPlayListDialog dialog = new LoadPlayListDialog();
             dialog.NewPlaylistEvent += NewPlaylist_NewPlaylistEvent;
             dialog.ShowDialog();
+        }
+
+        private void LoopButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button.Tag.ToString() == "Off")
+            {
+                button.Tag = "On";
+                if (currentPlaylist != null)
+                {
+                    currentPlaylist.loopMode = LOOP_MODE.INFINITE;
+                }
+            }
+            else
+            {
+                button.Tag = "Off";
+                if (currentPlaylist != null)
+                {
+                    currentPlaylist.loopMode = LOOP_MODE.ONE_TIME;
+                }
+            }
+        }
+
+        
+
+        private void LoopMode_trackEndEventHandler(object sender, EventArgs e)
+        {
+            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
+            {
+                PlayListListView.SelectedIndex++;
+            }
+            else
+            {
+                //back to the start
+                if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
+                {
+                    PlayListListView.SelectedIndex = 0;
+                }
+            }
+
+            PlayButton_Click(PlayButton, null);
+
+            
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null)
+            {
+                return;
+            }
+
+            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
+            {
+                PlayListListView.SelectedIndex++;
+            }
+            else
+            {
+                PlayListListView.SelectedIndex = 0;
+            }
+
+            PlayButton_Click(PlayButton, null);
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null)
+            {
+                return;
+            }
+
+            if (PlayListListView.SelectedIndex > 0)
+            {
+                PlayListListView.SelectedIndex--;
+            }
+            else
+            {
+                //if this is already the first track
+                StopButton_Click(StopButton, null);
+            }
+            PlayButton_Click(PlayButton, null);
         }
     }
 }

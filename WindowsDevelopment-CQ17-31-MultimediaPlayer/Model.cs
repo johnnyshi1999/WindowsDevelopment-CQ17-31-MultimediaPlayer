@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,31 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 {
     class Model
     {
+        private static Model model = null;
         public List<Playlist> collection;
 
         string getFileName(string PlayListName)
         {
             string result = BitConverter.ToString(Encoding.ASCII.GetBytes(PlayListName));
             return result.Replace("-", "");
+        }
+
+        private Model()
+        {
+            collection = new List<Playlist>();
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\data"))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\data");
+            }
+        }
+
+        public static Model GetInstance()
+        {
+            if (model == null)
+            {
+                model = new Model();
+            }
+            return model;
         }
 
         public void SavePlayList(Playlist playlist)
@@ -49,7 +69,26 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         }
 
-        public Playlist LoadPlayList(string path)
+        public BindingList<Playlist> GetCollection()
+        {
+            LoadCollection();
+            BindingList<Playlist> result = new BindingList<Playlist>(collection);
+            return result;
+        }
+
+        private void LoadCollection()
+        {
+            DirectoryInfo di = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\data");
+
+            var fileList = di.GetFiles();
+            for (int i = 0; i < fileList.Length; i++)
+            {
+                Playlist playlist = LoadPlayList(fileList[i].FullName);
+                collection.Add(playlist);
+            }
+        }
+
+        private Playlist LoadPlayList(string path)
         {
             Playlist result;
 

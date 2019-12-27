@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 {
@@ -30,9 +31,17 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         //Threads
         BackgroundWorker AddTracks;
 
+        DispatcherTimer _timer;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Set up timer 
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += timer_Tick;
+
         }
 
         //-------------------------Threads-------------------------
@@ -125,7 +134,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             {
                 MarqueeTrackName(item.Name);
                 currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-                MusicBox.getInstance().playTrack(item.FilePath);
+                MusicBox.getInstance().playTrack(item.FilePath, _timer);
             }
         }
 
@@ -140,7 +149,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-            MusicBox.getInstance().playTrack(item.FilePath);
+            MusicBox.getInstance().playTrack(item.FilePath, _timer);
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -208,5 +217,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         }
 
+        private void timer_Tick(object sender, EventArgs e)
+        {
+                var currentPos = MusicBox.getInstance().getCurrentPosition();
+                var duration = MusicBox.getInstance().getDuration();
+                TimeTextBlock.Text = $"{currentPos} | {duration}";    
+        }
     }
 }

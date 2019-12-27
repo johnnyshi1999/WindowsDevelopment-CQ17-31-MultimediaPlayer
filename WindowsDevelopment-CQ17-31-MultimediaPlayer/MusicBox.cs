@@ -14,11 +14,13 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     {
         private static MusicBox instance = null;
         private MediaPlayer myMusicPlayer;
+        public bool isPlaying { get; private set; }
 
         private MusicBox()
         {
             myMusicPlayer = new MediaPlayer();
             myMusicPlayer.MediaOpened += MyMusicPlayer_MediaOpened;
+            isPlaying = false;
         }
 
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)
@@ -35,7 +37,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         public void playTrack(string trackPath, DispatcherTimer _timer)
         {
-
             if (myMusicPlayer.Source != null)
             {
                 if(trackPath.Equals(myMusicPlayer.Source.LocalPath))
@@ -45,16 +46,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
             else
                 myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
+            isPlaying = true;
             _timer.Start();
         }
 
         public void pauseTrack()
         {
+            isPlaying = false;
             myMusicPlayer.Pause();
         }
 
         public void stopTrack()
         {
+            isPlaying = false;
             myMusicPlayer.Stop();
         }
 

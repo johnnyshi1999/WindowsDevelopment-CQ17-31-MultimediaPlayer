@@ -32,7 +32,10 @@
                             </Trigger>
 
                             <Trigger Property="Tag" Value="On">
-                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Background" Value="#DD2121"/>
+                                <Setter Property="Padding" Value="1"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="BorderBrush" Value="#DD2121"/>
                             </Trigger>
                             <Trigger Property="Tag" Value="Off">
                                 <Setter Property="Background" Value="Transparent"/>

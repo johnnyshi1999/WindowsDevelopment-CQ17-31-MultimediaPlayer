@@ -12,7 +12,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 {
     class MusicBox
     {
-        public event EventHandler TrackEnded;
         private static MusicBox instance = null;
         private MediaPlayer myMusicPlayer;
 

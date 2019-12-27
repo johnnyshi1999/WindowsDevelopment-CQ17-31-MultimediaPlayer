@@ -34,7 +34,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         BackgroundWorker AddTracks;
 
         DispatcherTimer _timer;
-
+      
         MusicBox MusicBox;
 
         public MainWindow()
@@ -148,10 +148,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
-            if (PlayListListView.SelectedItems.Count != 1)
+
+            //if more than 1 track is selected
+            if (PlayListListView.SelectedItems.Count > 1)
             {
                 MessageBox.Show("Please choose one and only one song");
                 return;
+            }
+
+            //if no track is selected 
+            if (PlayListListView.SelectedItems.Count == 0)
+            {
+                //play the first track
+                PlayListListView.SelectedIndex = 0;
             }
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
@@ -194,6 +203,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             currentPlaylist = playlist;
             PlayListListView.ItemsSource = currentPlaylist.trackList;
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
+            if (LoopButton.Tag.ToString() == "On")
+            {
+                currentPlaylist.loopMode = LOOP_MODE.INFINITE;
+            }
         }
 
         //-----------------------Animations-----------------------
@@ -289,6 +302,44 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             PlayButton_Click(PlayButton, null);
 
             
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null)
+            {
+                return;
+            }
+
+            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count)
+            {
+                PlayListListView.SelectedIndex++;
+            }
+            else
+            {
+                PlayListListView.SelectedIndex = 0;
+            }
+
+            PlayButton_Click(PlayButton, null);
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPlaylist == null)
+            {
+                return;
+            }
+
+            if (PlayListListView.SelectedIndex > 0)
+            {
+                PlayListListView.SelectedIndex--;
+            }
+            else
+            {
+                //if this is already the first track
+                StopButton_Click(StopButton, null);
+            }
+            PlayButton_Click(PlayButton, null);
         }
     }
 }

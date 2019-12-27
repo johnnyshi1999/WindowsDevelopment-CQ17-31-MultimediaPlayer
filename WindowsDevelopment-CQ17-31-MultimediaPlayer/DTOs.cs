@@ -12,6 +12,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     public class Track
     {
         private FileInfo trackFile;
+        
         private TagLib.File fileForTrackingProperties;
 
         public string Name {
@@ -67,6 +68,17 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     {
         public string playlistName { get; set; }
         public BindingList<Track> trackList;
+        public int TrackCount
+        {
+            get
+            {
+                if (trackList != null)
+                {
+                    return trackList.Count();
+                }
+                return 0;
+            }
+        }
         public PLAY_MODE playMode { get; set; }
         public LOOP_MODE loopMode { get; set; }
         public int currentTrackIdx = -1;

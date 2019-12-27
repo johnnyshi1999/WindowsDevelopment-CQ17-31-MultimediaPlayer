@@ -28,7 +28,7 @@
 
             <Image Source="Images/disc.png" Height="195" Width="195" Canvas.Left="101" Canvas.Top="120"></Image>
             <TextBlock Style="{StaticResource WhiteMediumTextBlockStyle}"
-                Name="TimeTextBlock" Text="00:20 | 03:50" Canvas.Left="140" Canvas.Top="335"></TextBlock>
+                Name="TimeTextBlock" Text="00:00 | 00:00" Canvas.Left="140" Canvas.Top="335"></TextBlock>
             <Border Background="Black" CornerRadius="0,0,30,30" Style="{StaticResource BorderStyle}" 
                     Height="59" Width="367" 
                     Canvas.Left="15" Canvas.Top="390">

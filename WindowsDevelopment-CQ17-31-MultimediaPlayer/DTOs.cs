@@ -14,22 +14,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private FileInfo trackFile;
         
         private TagLib.File fileForTrackingProperties;
+        private readonly string _trackName;
+        private readonly string _trackLength;
 
         public string Name {
             get {
-                if (trackFile == null) return "N/A";
-                string trueName = fileForTrackingProperties.Tag.Title == null ? 
-                       Path.GetFileNameWithoutExtension(trackFile.FullName)
-                    : fileForTrackingProperties.Tag.Title;
-                return trueName;
+                return _trackName;
             }
         }
         public string Length
         {
             get
             {
-                if (fileForTrackingProperties == null) return "N/A";
-                return fileForTrackingProperties.Properties.Duration.ToString();
+                return _trackLength;
             }
         }
         public TimeSpan position { set; get; }
@@ -37,6 +34,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             get
             {
+                if (trackFile == null || !File.Exists(trackFile.FullName)) return null;
                 return trackFile.FullName;
             }
         }
@@ -46,6 +44,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (File.Exists(trackPath)) {
                 trackFile = new FileInfo(trackPath);
                 fileForTrackingProperties = TagLib.File.Create(trackPath);
+                _trackName = fileForTrackingProperties.Tag.Title == null ?
+                      Path.GetFileNameWithoutExtension(trackFile.FullName)
+                   : fileForTrackingProperties.Tag.Title;
+                _trackLength = fileForTrackingProperties.Properties.Duration.ToString();
             }
         }
     }

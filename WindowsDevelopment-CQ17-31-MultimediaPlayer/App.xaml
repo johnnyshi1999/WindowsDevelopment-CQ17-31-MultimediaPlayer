@@ -23,6 +23,7 @@
         <Style TargetType="{x:Type TextBlock}" x:Key="WhiteLargeTextBlockStyle">
             <Setter Property="Foreground" Value="GhostWhite"/>
             <Setter Property="FontSize" Value="25"/>
+            
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="WhiteMediumTextBlockStyle">

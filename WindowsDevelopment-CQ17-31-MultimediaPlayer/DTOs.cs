@@ -93,17 +93,17 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             loopMode = LOOP_MODE.ONE_TIME;
         }
 
-        private void shufflePlaylist()
-        {
-            Random random = new Random();
-            BindingList<Track> result = new BindingList<Track>();
-            while (trackList.Count != 0)
-            {
-                int index = random.Next(trackList.Count);
-                result.Add(trackList[index]);
-                trackList.RemoveAt(index);
-            }
-            trackList = result;
-        }
+        //private void shufflePlaylist()
+        //{
+        //    Random random = new Random();
+        //    BindingList<Track> result = new BindingList<Track>();
+        //    while (trackList.Count != 0)
+        //    {
+        //        int index = random.Next(trackList.Count);
+        //        result.Add(trackList[index]);
+        //        trackList.RemoveAt(index);
+        //    }
+        //    trackList = result;
+        //}
     }
 }

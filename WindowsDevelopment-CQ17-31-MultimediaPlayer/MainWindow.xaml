@@ -100,8 +100,12 @@
                             Canvas.Left="135" Canvas.Top="5" Click="TrackDown_Click">
                         <Image Source="Images/down.png"></Image>
                     </Button>
-                    <Button Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
-                            Canvas.Left="190" Canvas.Top="5">
+                    <Button Name ="ShuffleButton"
+                            Tag="Off"
+                            Height="25" Width="25" Style="{StaticResource ButtonStyle}" 
+                            Canvas.Left="190" Canvas.Top="5"
+                            Click="ShuflleButton_Click"
+                            >
                         <Image Source="Images/shuffle.png"/>
                     </Button>
                     <Button Name="LoopButton" Tag="Off" Height="25" Width="25" Style="{StaticResource ButtonStyle}" 

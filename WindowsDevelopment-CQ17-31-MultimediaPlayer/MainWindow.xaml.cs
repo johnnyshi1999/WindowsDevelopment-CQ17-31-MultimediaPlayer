@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         DispatcherTimer _timer;
       
         MusicBox MusicBox;
+
+        //List for saving data of random play mode
+        List<int> listIndexForRandomPlayMode;
+        int currentIndexOfRandomPlayMode;
+        List<int> listIndexOfCurrentPlaylist;
 
         public MainWindow()
         {
@@ -166,8 +172,15 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             //if no track is selected 
             if (PlayListListView.SelectedItems.Count == 0)
             {
-                //play the first track
-                PlayListListView.SelectedIndex = 0;
+                if (currentPlaylist.playMode == PLAY_MODE.RANDOM)
+                {
+                    PlayListListView.SelectedIndex = listIndexForRandomPlayMode[currentIndexOfRandomPlayMode];
+                    currentIndexOfRandomPlayMode++;
+                }
+                else
+                    //play the first track
+                    PlayListListView.SelectedIndex = 0;
+           
             }
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
@@ -179,6 +192,9 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
             MusicBox.getInstance().playTrack(item.FilePath, _timer);
+
+          
+
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -296,26 +312,45 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
         }
 
-        
-
         private void LoopMode_trackEndEventHandler(object sender, EventArgs e)
         {
-            if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
+            if (currentPlaylist.playMode == PLAY_MODE.RANDOM) // PLAYMODE RANDOM
             {
-                PlayListListView.SelectedIndex++;
+                if (currentIndexOfRandomPlayMode < listIndexForRandomPlayMode.Count)
+                {
+                    PlayListListView.SelectedIndex = listIndexForRandomPlayMode[currentIndexOfRandomPlayMode];
+                    currentIndexOfRandomPlayMode++;
+                }
+                else
+                {
+                    if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
+                    {
+                        generateRanDomList();
+                        PlayListListView.SelectedIndex = listIndexForRandomPlayMode[currentIndexOfRandomPlayMode];
+                    }
+                }
+               
             }
             else
             {
-                //back to the start
-                if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
+                if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
                 {
-                    PlayListListView.SelectedIndex = 0;
+
+                    PlayListListView.SelectedIndex++;
+                }
+                else
+                {
+                    //back to the start
+                    if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
+                    {
+                        PlayListListView.SelectedIndex = 0;
+                    }
                 }
             }
 
             PlayButton_Click(PlayButton, null);
 
-            
+        
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
@@ -354,6 +389,65 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 StopButton_Click(StopButton, null);
             }
             PlayButton_Click(PlayButton, null);
+        }
+
+        private void ShuflleButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var button = sender as Button;
+            if (button.Tag.ToString() == "Off")
+            {
+                if (currentPlaylist != null)
+                {
+                    button.Tag = "On";
+
+                 
+                    listIndexOfCurrentPlaylist = new List<int>(Enumerable.Range(0, currentPlaylist.TrackCount));
+                   
+                    if (PlayListListView.SelectedIndex != -1)
+                    {
+                        // Trong lúc chương trình đang chạy 1 bài hát thì random list sẽ dc tạo ra mà không có bài hát đang chạy
+                        // Loại bỏ bài hát đang chạy
+                        listIndexOfCurrentPlaylist.RemoveAt(PlayListListView.SelectedIndex);
+                        
+                    }
+                    else 
+                    {
+                        // Nếu bấm shuffle button mà trong lúc chương trình đang rảnh sẽ tạo ra random list bao gồm tất cả bài hát trong play list
+                    }
+                    // Generate random list index
+                    generateRanDomList();
+                    currentPlaylist.playMode = PLAY_MODE.RANDOM;
+                  
+                }
+               
+            }
+            else
+            {
+                button.Tag = "Off";
+                if (currentPlaylist != null)
+                {
+                    currentPlaylist.playMode = PLAY_MODE.SEQUENTIAL;
+                }
+            }
+
+      
+        }
+        private void generateRanDomList()
+        {
+            // Generate random list index
+            listIndexForRandomPlayMode = new List<int>();
+            currentIndexOfRandomPlayMode = 0;
+            Random rnd = new Random();
+            while (listIndexOfCurrentPlaylist.Count != 0)
+            {
+                int index = rnd.Next(listIndexOfCurrentPlaylist.Count);
+                listIndexForRandomPlayMode.Add(listIndexOfCurrentPlaylist[index]);
+                listIndexOfCurrentPlaylist.RemoveAt(index);
+            }
+            currentPlaylist.playMode = PLAY_MODE.RANDOM;
+            for (int i = 0; i < listIndexForRandomPlayMode.Count; i++)
+                Console.Write("" + listIndexForRandomPlayMode[i] + ' ');
         }
     }
 }

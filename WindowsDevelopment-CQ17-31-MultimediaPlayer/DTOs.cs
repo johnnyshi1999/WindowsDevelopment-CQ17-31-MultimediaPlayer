@@ -115,6 +115,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (trackIdx < 0 || trackIdx >= trackList.Count) return;
             trackList[trackIdx].position = position;
         }
+
+        public Track getTrack(int trackIdx)
+        {
+            if (trackIdx < 0 || trackIdx >= trackList.Count) return null;
+            return trackList[trackIdx];
+        }
     }
 
 }

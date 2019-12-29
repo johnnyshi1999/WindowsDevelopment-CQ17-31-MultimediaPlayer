@@ -31,6 +31,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             myMusicPlayer = new MediaPlayer();
             isPlaying = false;
             myTimingObj = new timingObject();
+            myMusicPlayer.MediaEnded += MyMusicPlayer_MediaEnded;
+        }
+
+        private void MyMusicPlayer_MediaEnded(object sender, EventArgs e)
+        {
+            isPlaying = false;
         }
 
         public void SetTrackEndedEvent(EventHandler TrackEndedEvent)
@@ -109,11 +115,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             return null;
         }
 
-        public string getDuration()
+        public TimeSpan? getDuration()
         {
             if (myMusicPlayer.NaturalDuration.HasTimeSpan)
             {
-                return myMusicPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+                return myMusicPlayer.NaturalDuration.TimeSpan;
             }
             return null;
         }

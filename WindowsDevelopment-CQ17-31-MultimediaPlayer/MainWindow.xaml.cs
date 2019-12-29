@@ -91,6 +91,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void AddTracks_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            PlayListListView.ItemsSource = currentPlaylist.TrackList;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

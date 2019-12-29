@@ -53,7 +53,9 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             // Set up timer 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(0.1);
+           
             _timer.Tick += timer_Tick;
+          
 
         }
 
@@ -170,10 +172,16 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            Playlist test = currentPlaylist;
+
             if (currentPlaylist.currentTrackIdx != -1)
             {
-                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+                if (MusicBox.getCurrentPosition() != null)
+                    currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
             }
+           
+            
+            Playlist test2 = currentPlaylist;
 
             //if more than 1 track is selected
             if (PlayListListView.SelectedItems.Count > 1)
@@ -284,6 +292,9 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             currentPlaylist = playlist;
             PlayListListView.ItemsSource = currentPlaylist.TrackList;
+            if(currentPlaylist.currentTrackIdx != -1) {
+                  PlayListListView.SelectedIndex = currentPlaylist.currentTrackIdx;
+            }
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
             if (LoopButton.Tag.ToString() == "On")
             {

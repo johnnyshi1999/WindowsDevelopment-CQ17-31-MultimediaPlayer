@@ -61,6 +61,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 fileContentString.Append("\n");
             }
 
+            fileContentString.Append(playlist.currentTrackIdx);
+            fileContentString.Append("\n");
+            fileContentString.Append(MusicBox.getInstance().getCurrentPosition().ToString());
+            fileContentString.Append("\n");
             writer.Write(fileContentString.ToString());
 
             writer.Close();
@@ -112,7 +116,15 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 Track track = new Track(reader.ReadLine());
                 result.addTrack(track);
             }
-
+          
+            int currentTrackIdx = -1;
+            if (!Int32.TryParse(reader.ReadLine(), out currentTrackIdx))
+            {
+                currentTrackIdx = -1;
+            }
+            result.currentTrackIdx = currentTrackIdx;
+            TimeSpan currentPosition = TimeSpan.Parse(reader.ReadLine());
+            result.savePosition(currentTrackIdx, currentPosition);
             reader.Close();
 
             return result;

@@ -45,7 +45,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (myMusicPlayer.Source != null)
             {
                 if(trackPath.Equals(myMusicPlayer.Source.LocalPath))
+                {
+
                     myMusicPlayer.Play();
+                }
                 else
                     myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
             }

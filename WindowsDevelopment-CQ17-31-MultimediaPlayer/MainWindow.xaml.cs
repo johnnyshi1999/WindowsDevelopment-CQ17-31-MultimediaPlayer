@@ -211,7 +211,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     int pickedTrack;
                     do
                     {
-                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                     } while (pickedTrack != PlayListListView.SelectedIndex); //avoid picking the same track that has already played
 
                     PlayListListView.SelectedIndex = pickedTrack;
@@ -380,7 +380,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     trackingPlayedTrack.Add(PlayListListView.SelectedIndex);
                 }
 
-                if (trackingPlayedTrack.Count < currentPlaylist.trackList.Count)
+                if (trackingPlayedTrack.Count < currentPlaylist.TrackCount)
                 {     
                     int pickedTrack;
                     do

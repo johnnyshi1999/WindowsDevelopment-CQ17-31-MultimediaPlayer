@@ -24,9 +24,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         };
         private timingObject myTimingObj;
 
-        public delegate void InvokeUIUpdateMediaOpened();
-        public event InvokeUIUpdateMediaOpened MediaOpenedUIUpdates;
-
         private MusicBox()
         {
             myMusicPlayer = new MediaPlayer();

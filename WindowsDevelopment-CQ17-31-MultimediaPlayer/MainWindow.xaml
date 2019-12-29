@@ -30,6 +30,9 @@
             <Image Source="Images/disc.png" Height="195" Width="195" Canvas.Left="101" Canvas.Top="120"></Image>
             <TextBlock Style="{StaticResource WhiteMediumTextBlockStyle}"
                 Name="TimeTextBlock" Text="00:00 | 00:00" Canvas.Left="140" Canvas.Top="335"></TextBlock>
+            <Slider Style="{StaticResource Horizontal_Slider}" Width="367" Height="15" Canvas.Left="15" Canvas.Top="364"
+                    Name="MusicSlider" Thumb.DragStarted="MusicSlider_DragStarted" Thumb.DragCompleted="MusicSlider_DragCompleted"
+                    Value="0"/>
             <Border Background="Black" CornerRadius="0,0,30,30" Style="{StaticResource BorderStyle}" 
                     Height="59" Width="367" 
                     Canvas.Left="15" Canvas.Top="390">

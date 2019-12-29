@@ -39,6 +39,9 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
       
         MusicBox MusicBox;
 
+        //more stuffz
+        bool isUserDragging = false;
+
         //List for saving data of random play mode
         List<int> listIndexForRandomPlayMode;
         List<int> trackingPlayedTrack;
@@ -326,9 +329,15 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void timer_Tick(object sender, EventArgs e)
         {
             if (!MusicBox.getInstance().isPlaying) return;
-            var currentPos = MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss");
+            var currentPos = MusicBox.getInstance().getCurrentPosition();
             var duration = MusicBox.getInstance().getDuration();
-            TimeTextBlock.Text = $"{currentPos} | {duration}";    
+            if(currentPos != null && duration != null && !isUserDragging)
+            { 
+                MusicSlider.Minimum = 0;
+                MusicSlider.Maximum = duration.Value.TotalMilliseconds;
+                MusicSlider.Value = currentPos.Value.TotalMilliseconds;
+            }
+            TimeTextBlock.Text = $"{currentPos?.ToString(@"mm\:ss")} | {duration?.ToString(@"mm\:ss")}";    
         }
 
         private void SavePlayListButton_Click(object sender, RoutedEventArgs e)
@@ -372,7 +381,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void LoopMode_trackEndEventHandler(object sender, EventArgs e)
         {
             TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
-                $"{MusicBox.getDuration()}";
+                $"{MusicBox.getDuration()?.ToString(@"mm\:ss")}";
             currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
             currentPlaylist.currentTrackIdx = -1;
             if (currentPlaylist.playMode == PLAY_MODE.RANDOM) // PLAYMODE RANDOM
@@ -507,7 +516,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void MediaOpened_EventHandler(object sender, EventArgs e)
         {
             TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
-                $"{MusicBox.getDuration()}";
+                $"{MusicBox.getDuration()?.ToString(@"mm\:ss")}";
         }
 
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
@@ -557,6 +566,29 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void BackwardButton_Click(object sender, RoutedEventArgs e)
         {
             MusicBox.JumTrack(-5);
+        }
+
+        private void MusicSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            isUserDragging = true;
+        }
+
+        private void MusicSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            isUserDragging = false;
+            if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                Track myTrack = currentPlaylist.getTrack(currentPlaylist.currentTrackIdx);
+                if (myTrack.FilePath == null)
+                {
+                    MusicBox.getInstance().stopTrack();
+                    TimeTextBlock.Text = "00:00 | 00:00";
+                    return;
+                }
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, TimeSpan.FromMilliseconds(MusicSlider.Value));
+                MusicBox.playTrack(myTrack.FilePath, _timer, TimeSpan.FromMilliseconds(MusicSlider.Value));
+            }
         }
     }
 }

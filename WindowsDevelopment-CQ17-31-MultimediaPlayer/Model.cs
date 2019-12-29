@@ -51,13 +51,13 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             fileContentString.Append("\n");
 
             //number of tracks;
-            fileContentString.Append(playlist.trackList.Count);
+            fileContentString.Append(playlist.TrackCount);
             fileContentString.Append("\n");
 
             //save file paths of the tracks
-            for (int i = 0; i < playlist.trackList.Count; i++)
+            for (int i = 0; i < playlist.TrackCount; i++)
             {
-                fileContentString.Append(playlist.trackList[i].FilePath);
+                fileContentString.Append(playlist.TrackList[i].FilePath);
                 fileContentString.Append("\n");
             }
 
@@ -78,6 +78,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void LoadCollection()
         {
+            collection.Clear();
             DirectoryInfo di = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "\\data");
 
             var fileList = di.GetFiles();
@@ -109,8 +110,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             for (int i = 0; i < trackCount; i++)
             {
                 Track track = new Track(reader.ReadLine());
-                result.trackList.Add(track);
+                result.addTrack(track);
             }
+
+            reader.Close();
 
             return result;
 

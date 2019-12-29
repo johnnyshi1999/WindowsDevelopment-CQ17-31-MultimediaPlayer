@@ -36,7 +36,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             model = Model.GetInstance();
             collection = model.GetCollection();
             CollectionListView.ItemsSource = collection;
-
         }
 
         private void GetPlayList_DoubleClick(object sender, MouseButtonEventArgs e)

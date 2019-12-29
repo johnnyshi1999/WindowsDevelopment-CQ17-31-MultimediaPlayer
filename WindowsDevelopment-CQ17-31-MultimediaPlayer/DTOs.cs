@@ -29,7 +29,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return _trackLength;
             }
         }
-        public TimeSpan position { set; get; }
+        public TimeSpan? position { set; get; }
         public string FilePath
         {
             get
@@ -69,7 +69,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
     public class Playlist
     {
         public string playlistName { get; set; }
-        public BindingList<Track> trackList;
+        private List<Track> trackList;
         public int TrackCount
         {
             get
@@ -84,27 +84,37 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         public PLAY_MODE playMode { get; set; }
         public LOOP_MODE loopMode { get; set; }
         public int currentTrackIdx = -1;
+        public BindingList<Track> TrackList
+        {
+            get
+            {
+                return new BindingList<Track>(trackList);
+            }
+        }
 
         public Playlist(string name)
         {
             playlistName = name;
-            trackList = new BindingList<Track>();
+            trackList = new List<Track>();
             playMode = PLAY_MODE.SEQUENTIAL;
             loopMode = LOOP_MODE.ONE_TIME;
         }
 
-        //private void shufflePlaylist()
-        //{
-        //    Random random = new Random();
-        //    BindingList<Track> result = new BindingList<Track>();
-        //    while (trackList.Count != 0)
-        //    {
-        //        int index = random.Next(trackList.Count);
-        //        result.Add(trackList[index]);
-        //        trackList.RemoveAt(index);
-        //    }
-        //    trackList = result;
-        //}
+        public void addTrack(Track track)
+        {
+            trackList.Add(track);
+        }
+
+        public void removeTrack(Track track)
+        {
+            trackList.Remove(track);
+        }
+
+        public void savePosition(int trackIdx, TimeSpan? position)
+        {
+            if (trackIdx < 0 || trackIdx >= trackList.Count) return;
+            trackList[trackIdx].position = position;
+        }
     }
 
 }

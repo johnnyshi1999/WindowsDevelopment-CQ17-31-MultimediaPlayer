@@ -60,14 +60,14 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             string[] trackPaths = (string[])e.Argument;
            
-            int playlistCount = currentPlaylist.trackList.Count;
+            int playlistCount = currentPlaylist.TrackCount;
             for (int i = 0; i < trackPaths.Length; i++)
             {
                 bool trackDuplicate = false;
                 
                 for (int j = 0; j < playlistCount; j++)
                 {
-                    if (trackPaths[i].Equals(currentPlaylist.trackList[j].FilePath))
+                    if (trackPaths[i].Equals(currentPlaylist.TrackList[j].FilePath))
                     {
                         trackDuplicate = true;
                         break;
@@ -81,7 +81,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void AddTracks_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Track track = (Track)e.UserState;
-            currentPlaylist.trackList.Add(track);
+            currentPlaylist.addTrack(track);
         }
 
         private void AddTracks_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -110,6 +110,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             model = Model.GetInstance();
             MusicBox = MusicBox.getInstance();
             MusicBox.SetTrackEndedEvent(LoopMode_trackEndEventHandler);
+            MusicBox.SetMediaOpenedUIUpdate(MediaOpened_EventHandler);
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -135,13 +136,19 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             int amount = selected.Count;
             Mouse.OverrideCursor = Cursors.Wait;
             for (int i = 0; i < amount; i++)
-                currentPlaylist.trackList.Remove(selected[i]);
+                currentPlaylist.removeTrack(selected[i]);
+            PlayListListView.ItemsSource = currentPlaylist.TrackList;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void PlaylistTrack_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
+
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Track;
             if (item != null)
             {
@@ -153,13 +160,17 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     return;
                 }
                 currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-                MusicBox.getInstance().playTrack(item.FilePath, _timer);
+                MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
             }
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
 
             //if more than 1 track is selected
             if (PlayListListView.SelectedItems.Count > 1)
@@ -175,7 +186,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 {
                     //PlayListListView.SelectedIndex = listIndexForRandomPlayMode[currentIndexOfRandomPlayMode];
                     //currentIndexOfRandomPlayMode++;
-                    PlayListListView.SelectedIndex = new Random().Next() % currentPlaylist.trackList.Count;
+                    PlayListListView.SelectedIndex = new Random().Next() % currentPlaylist.TrackCount;
                 }
                 else
                     //play the first track
@@ -200,7 +211,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     int pickedTrack;
                     do
                     {
-                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                     } while (pickedTrack != PlayListListView.SelectedIndex); //avoid picking the same track that has already played
 
                     PlayListListView.SelectedIndex = pickedTrack;
@@ -219,21 +230,29 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return;
             }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-            MusicBox.getInstance().playTrack(item.FilePath, _timer);
-
-          
+            MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
 
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
+            }
+            TimeTextBlock.Text = "00:00 | 00:00";
+            currentPlaylist.currentTrackIdx = -1;
             MusicBox.getInstance().stopTrack();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
             MusicBox.getInstance().pauseTrack();
         }
 
@@ -258,7 +277,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void NewPlaylist_NewPlaylistEvent(Playlist playlist)
         {
             currentPlaylist = playlist;
-            PlayListListView.ItemsSource = currentPlaylist.trackList;
+            PlayListListView.ItemsSource = currentPlaylist.TrackList;
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
             if (LoopButton.Tag.ToString() == "On")
             {
@@ -304,7 +323,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void timer_Tick(object sender, EventArgs e)
         {
             if (!MusicBox.getInstance().isPlaying) return;
-            var currentPos = MusicBox.getInstance().getCurrentPosition();
+            var currentPos = MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss");
             var duration = MusicBox.getInstance().getDuration();
             TimeTextBlock.Text = $"{currentPos} | {duration}";    
         }
@@ -349,7 +368,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void LoopMode_trackEndEventHandler(object sender, EventArgs e)
         {
-            
+            TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
+                $"{MusicBox.getDuration()}";
+            currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
+            currentPlaylist.currentTrackIdx = -1;
             if (currentPlaylist.playMode == PLAY_MODE.RANDOM) // PLAYMODE RANDOM
             {
 
@@ -358,12 +380,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     trackingPlayedTrack.Add(PlayListListView.SelectedIndex);
                 }
 
-                if (trackingPlayedTrack.Count < currentPlaylist.trackList.Count)
+                if (trackingPlayedTrack.Count < currentPlaylist.TrackCount)
                 {     
                     int pickedTrack;
                     do
                     {
-                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                     } while (trackingPlayedTrack.Contains(pickedTrack));
 
                     //when success
@@ -375,7 +397,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     trackingPlayedTrack.Clear();
                     if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
                     {
-                        int pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        int pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                         PlayListListView.SelectedIndex = pickedTrack;
                         PlayButton_Click(PlayButton, null);
                     }
@@ -474,6 +496,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
 
 
+        }
+
+        private void MediaOpened_EventHandler(object sender, EventArgs e)
+        {
+            TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
+                $"{MusicBox.getDuration()}";
         }
     }
 }

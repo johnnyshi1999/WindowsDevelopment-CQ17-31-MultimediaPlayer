@@ -193,7 +193,6 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     PlayListListView.SelectedIndex = 0;
            
             }
-
             
             string buttonTag = (sender as Button).Tag?.ToString();
 
@@ -229,6 +228,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 TimeTextBlock.Text = "00:00 | 00:00";
                 return;
             }
+            if(currentPlaylist.currentTrackIdx == -1 && item.position != null)
+            {
+                item.position = null;
+            }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
             MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
 
@@ -241,7 +244,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             {
                 currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
             }
-            TimeTextBlock.Text = "00:00 | 00:00";
+            TimeTextBlock.Text = "Track stopped";
             currentPlaylist.currentTrackIdx = -1;
             MusicBox.getInstance().stopTrack();
         }

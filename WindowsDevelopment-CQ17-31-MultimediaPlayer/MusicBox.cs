@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -38,8 +39,8 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         public void SetMediaOpenedUIUpdate(EventHandler UIUpdate)
         {
-            myMusicPlayer.MediaOpened += UIUpdate;
             myMusicPlayer.MediaOpened += MyMusicPlayer_MediaOpened;
+            //myMusicPlayer.MediaOpened += UIUpdate;
         }
 
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)
@@ -67,15 +68,14 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 if (trackPath.Equals(myMusicPlayer.Source.LocalPath))
                 {
                     if (position != null) myMusicPlayer.Position = position.Value;
-                    myMusicPlayer.Play();
                     _timer.Start();
+                    myMusicPlayer.Play();
                 }
                 else
                 {
                     myTimingObj.pos = position;
                     myTimingObj.myTimer = _timer;
                     myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
-                    
                 }
             }
             else

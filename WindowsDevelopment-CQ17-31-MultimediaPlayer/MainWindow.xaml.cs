@@ -193,6 +193,34 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     PlayListListView.SelectedIndex = 0;
            
             }
+
+            
+            string buttonTag = (sender as Button).Tag?.ToString();
+
+            //if playlist has been fully played, waiting to be played from the start
+            if (buttonTag == "Replay")
+            {
+                
+                (sender as Button).Tag = "";
+                MusicBox.stopTrack();
+
+                //if it's in random mode
+                if (currentPlaylist.playMode == PLAY_MODE.RANDOM)
+                {
+                    //pick random a track to play
+                    int pickedTrack;
+                    do
+                    {
+                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                    } while (pickedTrack != PlayListListView.SelectedIndex); //avoid picking the same track that has already played
+
+                    PlayListListView.SelectedIndex = pickedTrack;
+                }
+                else //if it's in sequential
+                {
+                    PlayListListView.SelectedIndex = 0;
+                }
+            }
             var item = PlayListListView.SelectedItem as Track;
             MarqueeTrackName(item.Name);
             if (item.FilePath == null)
@@ -347,8 +375,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             if (currentPlaylist.playMode == PLAY_MODE.RANDOM) // PLAYMODE RANDOM
             {
 
-                trackingPlayedTrack.Add(PlayListListView.SelectedIndex);
-                if (trackingPlayedTrack.Count < currentPlaylist.TrackCount)
+                if (trackingPlayedTrack.Contains(PlayListListView.SelectedIndex)  == false)
+                {
+                    trackingPlayedTrack.Add(PlayListListView.SelectedIndex);
+                }
+
+                if (trackingPlayedTrack.Count < currentPlaylist.trackList.Count)
                 {     
                     int pickedTrack;
                     do
@@ -371,6 +403,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     }
                     else
                     {
+                        PlayButton.Tag = "Replay";
                         return;
                     }
                     
@@ -395,6 +428,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     }
                     else
                     {
+                        PlayButton.Tag = "Replay";
                         return;
                     }
                 }
@@ -439,7 +473,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             PlayButton_Click(PlayButton, null);
         }
 
-        private void ShuflleButton_Click(object sender, RoutedEventArgs e)
+        private void ShuffleButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
 
@@ -448,6 +482,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 button.Tag = "On";
                 if (currentPlaylist != null)
                 {
+                    trackingPlayedTrack.Clear();
                     currentPlaylist.playMode = PLAY_MODE.RANDOM;
                 }
             }

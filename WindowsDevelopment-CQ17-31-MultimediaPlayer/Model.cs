@@ -58,13 +58,15 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             for (int i = 0; i < playlist.TrackCount; i++)
             {
                 fileContentString.Append(playlist.TrackList[i].FilePath);
+                fileContentString.Append(" - ");
+                double time = playlist.TrackList[i].position == null ? 0 : playlist.TrackList[i].position.Value.TotalMilliseconds;
+                fileContentString.Append(time);
                 fileContentString.Append("\n");
             }
 
             fileContentString.Append(playlist.currentTrackIdx);
             fileContentString.Append("\n");
-            fileContentString.Append(MusicBox.getInstance().getCurrentPosition().ToString());
-            fileContentString.Append("\n");
+           
             writer.Write(fileContentString.ToString());
 
             writer.Close();
@@ -113,7 +115,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
             for (int i = 0; i < trackCount; i++)
             {
-                Track track = new Track(reader.ReadLine());
+                string line = reader.ReadLine();
+                var tokens = line.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                Track track = new Track(tokens[0]);
+                track.position = TimeSpan.FromMilliseconds(double.Parse(tokens[1]));
                 result.addTrack(track);
             }
           
@@ -123,8 +128,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 currentTrackIdx = -1;
             }
             result.currentTrackIdx = currentTrackIdx;
-            TimeSpan currentPosition = TimeSpan.Parse(reader.ReadLine());
-            result.savePosition(currentTrackIdx, currentPosition);
+            
             reader.Close();
 
             return result;

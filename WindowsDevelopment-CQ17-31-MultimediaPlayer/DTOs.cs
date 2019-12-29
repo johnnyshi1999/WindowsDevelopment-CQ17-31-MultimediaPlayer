@@ -29,7 +29,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return _trackLength;
             }
         }
-        public TimeSpan position { set; get; }
+        public TimeSpan? position { set; get; }
         public string FilePath
         {
             get
@@ -108,6 +108,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         public void removeTrack(Track track)
         {
             trackList.Remove(track);
+        }
+
+        public void savePosition(int trackIdx, TimeSpan? position)
+        {
+            if (trackIdx < 0 || trackIdx >= trackList.Count) return;
+            trackList[trackIdx].position = position;
         }
     }
 }

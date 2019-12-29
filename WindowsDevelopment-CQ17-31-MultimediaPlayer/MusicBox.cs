@@ -16,11 +16,22 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private MediaPlayer myMusicPlayer;
         public bool isPlaying { get; private set; }
 
+        //Spaghetti coding variable here
+        private class timingObject
+        {
+            public DispatcherTimer myTimer;
+            public TimeSpan? pos;
+        };
+        private timingObject myTimingObj;
+
+        public delegate void InvokeUIUpdateMediaOpened();
+        public event InvokeUIUpdateMediaOpened MediaOpenedUIUpdates;
+
         private MusicBox()
         {
             myMusicPlayer = new MediaPlayer();
-            myMusicPlayer.MediaOpened += MyMusicPlayer_MediaOpened;
             isPlaying = false;
+            myTimingObj = new timingObject();
         }
 
         public void SetTrackEndedEvent(EventHandler TrackEndedEvent)
@@ -28,8 +39,20 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             myMusicPlayer.MediaEnded += TrackEndedEvent;
         }
 
+        public void SetMediaOpenedUIUpdate(EventHandler UIUpdate)
+        {
+            myMusicPlayer.MediaOpened += UIUpdate;
+            myMusicPlayer.MediaOpened += MyMusicPlayer_MediaOpened;
+        }
+
         private void MyMusicPlayer_MediaOpened(object sender, EventArgs e)
         {
+            myTimingObj.myTimer?.Start();
+            if (myTimingObj.pos != null)
+            {
+                myMusicPlayer.Position = myTimingObj.pos.Value;
+            }
+            
             myMusicPlayer.Play();
         }
 
@@ -40,19 +63,31 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             return instance;
         }
 
-        public void playTrack(string trackPath, DispatcherTimer _timer)
+        public void playTrack(string trackPath, DispatcherTimer _timer, TimeSpan? position)
         {
             if (myMusicPlayer.Source != null)
             {
-                if(trackPath.Equals(myMusicPlayer.Source.LocalPath))
+                if (trackPath.Equals(myMusicPlayer.Source.LocalPath))
+                {
+                    if (position != null) myMusicPlayer.Position = position.Value;
                     myMusicPlayer.Play();
+                    _timer.Start();
+                }
                 else
+                {
+                    myTimingObj.pos = position;
+                    myTimingObj.myTimer = _timer;
                     myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
+                    
+                }
             }
             else
+            {
+                myTimingObj.pos = position;
+                myTimingObj.myTimer = _timer;
                 myMusicPlayer.Open(new Uri(trackPath, UriKind.Absolute));
+            }
             isPlaying = true;
-            _timer.Start();
         }
 
         public void pauseTrack()
@@ -67,10 +102,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             myMusicPlayer.Stop();
         }
 
-        public string getCurrentPosition()
+        public TimeSpan? getCurrentPosition()
         {
-            if(myMusicPlayer.Source != null ) {
-                return myMusicPlayer.Position.ToString(@"mm\:ss");
+            if (myMusicPlayer.Source != null)
+            {
+                return myMusicPlayer.Position;
             }
             return null;
         }
@@ -84,7 +120,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             return null;
         }
 
-        public Boolean isSourceNull()
+        public bool isSourceNull()
         {
             return (myMusicPlayer.Source == null);
         }

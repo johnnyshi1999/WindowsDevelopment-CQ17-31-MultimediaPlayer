@@ -110,6 +110,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             model = Model.GetInstance();
             MusicBox = MusicBox.getInstance();
             MusicBox.SetTrackEndedEvent(LoopMode_trackEndEventHandler);
+            MusicBox.SetMediaOpenedUIUpdate(MediaOpened_EventHandler);
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -136,12 +137,18 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             Mouse.OverrideCursor = Cursors.Wait;
             for (int i = 0; i < amount; i++)
                 currentPlaylist.removeTrack(selected[i]);
+            PlayListListView.ItemsSource = currentPlaylist.TrackList;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void PlaylistTrack_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
+
             var item = ((FrameworkElement)e.OriginalSource).DataContext as Track;
             if (item != null)
             {
@@ -153,13 +160,17 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     return;
                 }
                 currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-                MusicBox.getInstance().playTrack(item.FilePath, _timer);
+                MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
             }
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
 
             //if more than 1 track is selected
             if (PlayListListView.SelectedItems.Count > 1)
@@ -191,21 +202,29 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return;
             }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-            MusicBox.getInstance().playTrack(item.FilePath, _timer);
-
-          
+            MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
 
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
+            }
+            TimeTextBlock.Text = "00:00 | 00:00";
+            currentPlaylist.currentTrackIdx = -1;
             MusicBox.getInstance().stopTrack();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
+            if (currentPlaylist.currentTrackIdx != -1)
+            {
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+            }
             MusicBox.getInstance().pauseTrack();
         }
 
@@ -276,7 +295,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void timer_Tick(object sender, EventArgs e)
         {
             if (!MusicBox.getInstance().isPlaying) return;
-            var currentPos = MusicBox.getInstance().getCurrentPosition();
+            var currentPos = MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss");
             var duration = MusicBox.getInstance().getDuration();
             TimeTextBlock.Text = $"{currentPos} | {duration}";    
         }
@@ -321,6 +340,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void LoopMode_trackEndEventHandler(object sender, EventArgs e)
         {
+            TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
+                $"{MusicBox.getDuration()}";
+            currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, null);
+            currentPlaylist.currentTrackIdx = -1;
             if (currentPlaylist.playMode == PLAY_MODE.RANDOM) // PLAYMODE RANDOM
             {
 
@@ -438,6 +461,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             }
 
 
+        }
+
+        private void MediaOpened_EventHandler(object sender, EventArgs e)
+        {
+            TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
+                $"{MusicBox.getDuration()}";
         }
     }
 }

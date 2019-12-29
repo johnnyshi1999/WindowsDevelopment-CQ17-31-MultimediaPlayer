@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -120,6 +121,15 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         public bool isSourceNull()
         {
             return (myMusicPlayer.Source == null);
+        }
+
+        public void JumTrack(int seconds)
+        {
+            TimeSpan time = myMusicPlayer.Position.Add(TimeSpan.FromSeconds(seconds));
+            Debug.WriteLine(myMusicPlayer.Position);
+            myMusicPlayer.Position = time;
+            Debug.WriteLine(myMusicPlayer.Position);
+            myMusicPlayer.Play();
         }
 
     }

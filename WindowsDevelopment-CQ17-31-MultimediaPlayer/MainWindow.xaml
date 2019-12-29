@@ -8,7 +8,8 @@
         Title="Music Player"
         Background="Black"
         Loaded="Window_Loaded"
-        Height="550" Width="800">
+        Height="550" Width="800"
+        KeyDown="Window_KeyDown">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -40,12 +41,14 @@
                     </Button>
 
                     <Button x:Name="ForwardButton" Style="{StaticResource ButtonStyle}" 
-                    Height="35" Width="35" Canvas.Left="246" Canvas.Top="13">
+                    Height="35" Width="35" Canvas.Left="246" Canvas.Top="13"
+                            Click="ForwardButton_Click">
                         <Image Source="Images/forwards.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
 
                     <Button x:Name="BackwardButton" Style="{StaticResource ButtonStyle}" 
-                    Height="35" Width="35" Canvas.Left="35" Canvas.Top="13">
+                    Height="35" Width="35" Canvas.Left="35" Canvas.Top="13"
+                            Click="BackwardButton_Click">
                         <Image Source="Images/backward.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
 

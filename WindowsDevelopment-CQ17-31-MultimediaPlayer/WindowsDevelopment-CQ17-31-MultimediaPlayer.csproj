@@ -169,5 +169,8 @@
   <ItemGroup>
     <Resource Include="Images\pause.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="System\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

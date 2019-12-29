@@ -47,7 +47,8 @@
                     </Button>
 
                     <Button x:Name="BackwardButton" Style="{StaticResource ButtonStyle}" 
-                    Height="35" Width="35" Canvas.Left="35" Canvas.Top="13">
+                    Height="35" Width="35" Canvas.Left="35" Canvas.Top="13"
+                            Click="BackwardButton_Click">
                         <Image Source="Images/backward.png" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
 

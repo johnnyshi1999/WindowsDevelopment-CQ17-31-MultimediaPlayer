@@ -509,6 +509,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
+            MusicBox.JumTrack(5);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -517,12 +518,22 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             {
                 case Key.Left:
                     {
-                        BackButton_Click(BackButton, null);
+                        BackwardButton_Click(BackwardButton, null);
                         break;
                     }
                 case Key.Right:
                     {
-                        NextButton_Click(BackButton, null);
+                        ForwardButton_Click(ForwardButton, null);
+                        break;
+                    }
+                case Key.Up:
+                    {
+                        BackButton_Click(BackButton, null);
+                        break;
+                    }
+                case Key.Down:
+                    {
+                        NextButton_Click(NextButton, null);
                         break;
                     }
                 case Key.Space:
@@ -538,6 +549,11 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                         break;
                     }
             }
+        }
+
+        private void BackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            MusicBox.JumTrack(-5);
         }
     }
 }

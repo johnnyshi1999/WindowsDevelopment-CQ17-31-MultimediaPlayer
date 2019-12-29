@@ -166,23 +166,18 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     return;
                 }
                 currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-                MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
+                MusicBox.getInstance().playTrack(item.FilePath, _timer, null);
             }
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentPlaylist == null) return;
-            Playlist test = currentPlaylist;
 
             if (currentPlaylist.currentTrackIdx != -1)
             {
-                if (MusicBox.getCurrentPosition() != null)
-                    currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
+                currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, MusicBox.getCurrentPosition());
             }
-           
-            
-            Playlist test2 = currentPlaylist;
 
             //if more than 1 track is selected
             if (PlayListListView.SelectedItems.Count > 1)
@@ -245,7 +240,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 item.position = null;
             }
             currentPlaylist.currentTrackIdx = PlayListListView.SelectedIndex;
-            MusicBox.getInstance().playTrack(item.FilePath, _timer, item.position);
+            MusicBox.getInstance().playTrack(item.FilePath, _timer, null);
 
         }
 
@@ -295,6 +290,16 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             PlayListListView.ItemsSource = currentPlaylist.TrackList;
             if(currentPlaylist.currentTrackIdx != -1) {
                   PlayListListView.SelectedIndex = currentPlaylist.currentTrackIdx;
+                  //Stop current track;
+                  MusicBox.stopTrack();
+                  Track track = currentPlaylist.getTrack(currentPlaylist.currentTrackIdx);
+                  if(track.FilePath == null)
+                  {
+                      MusicBox.getInstance().stopTrack();
+                      TimeTextBlock.Text = "00:00 | 00:00";
+                      return;
+                  }
+                  MusicBox.playTrack(track.FilePath, _timer, track.position);
             }
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
             if (LoopButton.Tag.ToString() == "On")
@@ -601,6 +606,24 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 currentPlaylist.savePosition(currentPlaylist.currentTrackIdx, TimeSpan.FromMilliseconds(MusicSlider.Value));
                 MusicBox.playTrack(myTrack.FilePath, _timer, TimeSpan.FromMilliseconds(MusicSlider.Value));
             }
+        }
+
+        private void ResetTrackUIs()
+        {
+            //Reset track name
+            TrackNameTextBlock.BeginAnimation(Canvas.RightProperty, null);
+            TrackNameTextBlock.Measure(new Size(double.PositiveInfinity,
+                                            double.PositiveInfinity));
+            var Width = TrackNameTextBlock.DesiredSize.Width;
+            Canvas.SetRight(TrackNameTextBlock, (TrackNameWrapper.ActualWidth - Width) / 2);
+
+            //Reset track time
+            TimeTextBlock.Text = "00:00 | 00:00";
+
+            //Set Music Slider to start
+            MusicSlider.Minimum = 0;
+            MusicSlider.Maximum = 1;
+            MusicSlider.Value = 0;
         }
     }
 }

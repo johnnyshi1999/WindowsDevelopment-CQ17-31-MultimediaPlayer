@@ -49,7 +49,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
             // Set up timer 
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromSeconds(0.1);
             _timer.Tick += timer_Tick;
 
         }
@@ -442,8 +442,10 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 return;
             }
 
+            MusicBox.stopTrack();
             if (PlayListListView.SelectedIndex < PlayListListView.Items.Count - 1)
             {
+                MusicBox.stopTrack();
                 PlayListListView.SelectedIndex++;
             }
             else
@@ -463,6 +465,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
 
             if (PlayListListView.SelectedIndex > 0)
             {
+                MusicBox.stopTrack();
                 PlayListListView.SelectedIndex--;
             }
             else
@@ -502,6 +505,39 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             TimeTextBlock.Text = $"{MusicBox.getInstance().getCurrentPosition()?.ToString(@"mm\:ss")} | " +
                 $"{MusicBox.getDuration()}";
+        }
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    {
+                        BackButton_Click(BackButton, null);
+                        break;
+                    }
+                case Key.Right:
+                    {
+                        NextButton_Click(BackButton, null);
+                        break;
+                    }
+                case Key.Space:
+                    {
+                       if (MusicBox.isPlaying == true)
+                        {
+                            PauseButton_Click(PauseButton, null);
+                        }
+                       else
+                        {
+                            PlayButton_Click(PlayButton, null);
+                        }
+                        break;
+                    }
+            }
         }
     }
 }

@@ -122,5 +122,13 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             return (myMusicPlayer.Source == null);
         }
 
+        public void JumTrack(int seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+            myMusicPlayer.Pause();
+            myMusicPlayer.Position.Add(time);
+            myMusicPlayer.Play();
+        }
+
     }
 }

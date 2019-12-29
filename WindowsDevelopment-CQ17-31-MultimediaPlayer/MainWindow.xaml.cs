@@ -60,14 +60,14 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         {
             string[] trackPaths = (string[])e.Argument;
            
-            int playlistCount = currentPlaylist.trackList.Count;
+            int playlistCount = currentPlaylist.TrackCount;
             for (int i = 0; i < trackPaths.Length; i++)
             {
                 bool trackDuplicate = false;
                 
                 for (int j = 0; j < playlistCount; j++)
                 {
-                    if (trackPaths[i].Equals(currentPlaylist.trackList[j].FilePath))
+                    if (trackPaths[i].Equals(currentPlaylist.TrackList[j].FilePath))
                     {
                         trackDuplicate = true;
                         break;
@@ -81,7 +81,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void AddTracks_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Track track = (Track)e.UserState;
-            currentPlaylist.trackList.Add(track);
+            currentPlaylist.addTrack(track);
         }
 
         private void AddTracks_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -135,7 +135,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             int amount = selected.Count;
             Mouse.OverrideCursor = Cursors.Wait;
             for (int i = 0; i < amount; i++)
-                currentPlaylist.trackList.Remove(selected[i]);
+                currentPlaylist.removeTrack(selected[i]);
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -175,7 +175,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                 {
                     //PlayListListView.SelectedIndex = listIndexForRandomPlayMode[currentIndexOfRandomPlayMode];
                     //currentIndexOfRandomPlayMode++;
-                    PlayListListView.SelectedIndex = new Random().Next() % currentPlaylist.trackList.Count;
+                    PlayListListView.SelectedIndex = new Random().Next() % currentPlaylist.TrackCount;
                 }
                 else
                     //play the first track
@@ -230,7 +230,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
         private void NewPlaylist_NewPlaylistEvent(Playlist playlist)
         {
             currentPlaylist = playlist;
-            PlayListListView.ItemsSource = currentPlaylist.trackList;
+            PlayListListView.ItemsSource = currentPlaylist.TrackList;
             PlayListNameTextBlock.Text = currentPlaylist.playlistName;
             if (LoopButton.Tag.ToString() == "On")
             {
@@ -325,12 +325,12 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
             {
 
                 trackingPlayedTrack.Add(PlayListListView.SelectedIndex);
-                if (trackingPlayedTrack.Count < currentPlaylist.trackList.Count)
+                if (trackingPlayedTrack.Count < currentPlaylist.TrackCount)
                 {     
                     int pickedTrack;
                     do
                     {
-                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                     } while (trackingPlayedTrack.Contains(pickedTrack));
 
                     //when success
@@ -342,7 +342,7 @@ namespace WindowsDevelopment_CQ17_31_MultimediaPlayer
                     trackingPlayedTrack.Clear();
                     if (currentPlaylist.loopMode == LOOP_MODE.INFINITE)
                     {
-                        int pickedTrack = new Random().Next(100, 1000) % currentPlaylist.trackList.Count;
+                        int pickedTrack = new Random().Next(100, 1000) % currentPlaylist.TrackCount;
                         PlayListListView.SelectedIndex = pickedTrack;
                         PlayButton_Click(PlayButton, null);
                     }
